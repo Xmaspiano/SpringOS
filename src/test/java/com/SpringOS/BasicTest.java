@@ -1,6 +1,7 @@
 package com.SpringOS;
 
 import com.SpringOS.system.entity.common.IdEntity;
+import com.SpringOS.util.PackageUtil;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.junit.Before;
 import org.junit.Test;
@@ -46,7 +47,7 @@ public class BasicTest {//} extends AbstractTransactionalJUnit4SpringContextTest
     public void init(){
         List authList = new ArrayList();
 
-        List<Class<?>> classes = PackageUtilTest.getClasses("com.SpringOS");
+        List<Class<?>> classes = new PackageUtil().getClasses("com.SpringOS");
         RequiresRoles rr;
         shiroSubject ss;
         for (Class clas :classes) {
