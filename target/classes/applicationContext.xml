@@ -48,7 +48,7 @@
         <!--</property>-->
     <!--</bean>-->
 
-    <context:property-placeholder ignore-resource-not-found="true" location="classpath*:/application.properties"/>
+    <context:property-placeholder ignore-resource-not-found="true" location="classpath*:/application_web.properties"/>
 
     <!-- Tomcat JDBC连接池 -->
     <bean id="dataSource" class="org.apache.tomcat.jdbc.pool.DataSource" destroy-method="close">
