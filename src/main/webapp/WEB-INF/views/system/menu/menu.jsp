@@ -20,13 +20,14 @@
 
 </script>
 <body>
-<table id="table-menu" title="<i:info name='菜单管理'/>" style="width:100%;height:400px"></table>
+<table id="table-menu" title="<i class='icon-save'/><i:info name='菜单管理'/>&nbsp;" style="width:100%;height:400px"></table>
 <div id="dialog-menu" title="" class="easyui-dialog" style="width:500px;height:400px;"
-     data-options="left:360,top:70,closed:true,iconCls:'icon-save',resizable:false,modal:true,buttons:button_dialog">
+     data-options="left:360,top:70,closed:true,resizable:false,modal:true,buttons:button_dialog">
     <form id="form1" method="post">
         <input type="hidden" id="id" name="id" value=""/>
         <input type="hidden" id="life" name="life" value="1"/>
         <input type="hidden" id="parentid" name="parentid" value="1"/>
+        <input type="hidden" id="name_old" name="parentid" value=""/>
         <table style="width: 100%;height:70px;">
             <tr>
                 <td><i:info name='菜单编号'/></td>
@@ -40,7 +41,7 @@
                 <td><i:info name='是否启用'/></td>
                 <td>
                     <a id="btn" href="#" class="easyui-linkbutton"
-                       data-options="iconCls:'e-icon icon-ok',toggle:true,selected:true" onclick="clickLife()">
+                       data-options="toggle:true,selected:true" onclick="clickLife()">
                         <i:info name='启用'/></a>
                 </td>
             </tr>
@@ -57,7 +58,7 @@
     $(function() {
         //初始化treegrid数据
         $('#table-menu').treegrid({
-            title:"<i:info name='菜单管理'/>",
+            title:"<i class='icon-save'/>&nbsp;<i:info name='菜单管理'/>",
             url: '/menu/date_treegrid.json',
             loadMsg:"<i:info name='数据加载中...'/>",
             idField: 'id',
@@ -105,23 +106,23 @@
 
     //定义treegrid工具栏
     var toolbar = [{
-        text:"<i:info name='新增'/>",
+        text:"<i class='icon-plus'/>&nbsp;<i:info name='新增'/>",
         <shiro:lacksPermission name="menu:save:add">disabled:true,</shiro:lacksPermission>
-        iconCls: 'e-icon icon-plus',
+//        iconCls: 'e-icon icon-plus',
         handler: function(){
             actionOver("add");
         }
     },{
-        text:"<i:info name='修改'/>",
+        text:"<i class='icon-pencil'/>&nbsp;<i:info name='修改'/>",
         <shiro:lacksPermission name="menu:save:add">disabled:true,</shiro:lacksPermission>
-        iconCls: 'e-icon icon-pencil',
+//        iconCls: 'e-icon icon-pencil',
         handler: function(){
             actionOver("edit");
         }
     },{
-        text:"<i:info name='删除'/>",
+        text:"<i class='icon-remove'/>&nbsp;<i:info name='删除'/>",
         <shiro:lacksPermission name="menu:save:add">disabled:true,</shiro:lacksPermission>
-        iconCls: 'e-icon icon-remove',
+//        iconCls: 'e-icon icon-remove',
         handler: function(){
             actionOver("delete");
         }
@@ -129,15 +130,14 @@
 
 //定义dialog对话框按钮
     var button_dialog = [{
-        text:"<i:info name='确认'/>",
-        iconCls: 'e-icon icon-ok',
+        text:"<i class='icon-ok'/>&nbsp;<i:info name='确认'/>",
+//        iconCls: 'e-icon icon-ok',
         handler: function(){
             submitApply();
-            parent._left_TreeReload();
         }
     },{
-        text:"<i:info name='取消'/>",
-        iconCls: 'e-icon icon-remove',
+        text:"<i class='icon-remove'/>&nbsp;<i:info name='取消'/>",
+//        iconCls: 'e-icon icon-remove',
         handler:function(){
             actionOver("colse");
         }
@@ -152,6 +152,9 @@
             case "reload":
                 $('#table-menu').treegrid("reload");
                 $('#menu_tree').tree("reload");
+                break;
+            case "menuReload":
+                refush_menu();
                 break;
             case "add":
                 <shiro:hasPermission name="menu:save:add">
@@ -193,7 +196,19 @@
                 if(data.success) {
                     actionOver("reload");
                     actionOver("colse");
-//                    _left_TreeReload();
+
+                    var name = $("#name_old").val()==""?$("#name").val():$("#name_old").val();
+                    //左侧菜单刷新
+                    parent._left_TreeReload();
+                    //收藏夹刷新
+                    parent.refush_favarite();
+
+                    if (parent.$('#body').tabs('exists', name)){
+                        menu_list = JSON.parse(parent.getCookie("MENU_LIST"));
+                        var jsonObj = parent.getJsonMenu(menu_list, name);
+                        parent.ajax_getTreeTagById(jsonObj.id);
+                        parent.$('#body').tabs('close', name);
+                    }
                 }else{
                     $.messager.alert('Warning',data.message);
                 }
@@ -241,6 +256,13 @@
                     if (data.success) {
                         actionOver("reload");
                         actionOver("colse");
+                        //左侧菜单刷新
+                        parent._left_TreeReload();
+                        //收藏夹刷新
+                        parent.change_favarite(row.name, false);
+                        if (parent.$('#body').tabs('exists', row.name)) {
+                            parent.$('#body').tabs('close', row.name);
+                        }
                     } else {
                         $.messager.alert('Warning', data.message);
                     }
@@ -252,7 +274,7 @@
     }
     //选择对话框目录tree并赋值
     function menuTreeSelect(id){
-        var tag = id?$('#menu_tree').tree('find', id):$('#menu_tree').tree('getRoot');//无id默认到根目录
+        var tag = id && $('#menu_tree').tree('find', id) != null?$('#menu_tree').tree('find', id):$('#menu_tree').tree('getRoot');//无id默认到根目录
         $('#menu_tree').tree('select', tag.target);
         $('#menu_tree').tree('expandTo',tag.id);
 
@@ -271,15 +293,15 @@
         if(val){
             $("#btn").linkbutton({
                 selected:true,
-                text:"<i:info name='启用'/>",
-                iconCls:'e-icon icon-ok'
+                text:"<i class='icon-ok'/>&nbsp;<i:info name='启用'/>",
+//                iconCls:'e-icon icon-ok'
             });
             $("#life").val(1);
         }else{
             $("#btn").linkbutton({
                 selected:false,
-                text:"<i:info name='禁用'/>",
-                iconCls:'e-icon icon-ban-circle'
+                text:"<i class='icon-ban-circle'/>&nbsp;<i:info name='禁用'/>",
+//                iconCls:'e-icon icon-ban-circle'
             });
             $("#life").val(0);
         }
@@ -290,12 +312,14 @@
             $("#id").val("");
             $("#appid").textbox("setValue","");
             $("#name").textbox("setValue","");
+            $("#name_old").val("");
             $("#remark").textbox("setValue","");
             changeLife(1);
         }else{
             $("#id").val(data.id);
             $("#appid").textbox("setValue",data.appid);
             $("#name").textbox("setValue",data.name);
+            $("#name_old").val(data.name);
             $("#remark").textbox("setValue",data.remark);
             changeLife(data.life);
         }

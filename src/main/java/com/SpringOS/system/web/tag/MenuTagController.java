@@ -29,7 +29,7 @@ public class MenuTagController {
     @RequestMapping(value = "/menu_tree.json" )
     @ResponseBody
     public Map getTreeDate(@RequestParam(defaultValue = "1",value = "parentid") Long id){
-        List<OsMenu> osMenuList = osMenuService.findAllBySuper(id);//菜单
+        List<OsMenu> osMenuList = osMenuService.findAllBySuper(getLevelTwoMenu(id).getId());//二级菜单
 
         Map jsonMap = new HashMap();
         jsonMap.put("total",osMenuList.size());
@@ -44,7 +44,7 @@ public class MenuTagController {
         jsonMap.put("success", true);
 
         OsMenu osMenu = osMenuService.findOne(id);
-        OsMenu osPartMenu = osMenuService.findOne(osMenu.getParentid());
+        OsMenu osPartMenu = getLevelTwoMenu(osMenu.getParentid());
         System.out.println(osMenu);
         System.out.println(osPartMenu);
         if(id == 0l){//默认
@@ -61,6 +61,20 @@ public class MenuTagController {
             jsonMap.put("parentId", osMenu.getParentid());
         }
         return jsonMap;
+    }
+
+    private OsMenu getLevelTwoMenu(Long id){
+        OsMenu osPartMenu;
+        if(id > 1l) {
+            osPartMenu = osMenuService.findOne(id);
+            if (osPartMenu.getParentid() != 1l) {
+                return getLevelTwoMenu(osPartMenu.getParentid());
+            }
+        }else {
+            osPartMenu = new OsMenu();
+            osPartMenu.setId(id);
+        }
+        return osPartMenu;
     }
 
     public Map[] test(List<OsMenu> osMenuList){

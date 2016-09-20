@@ -29,7 +29,7 @@
 </head>
 <%--<%@ include file="/static/layout/loading_system.jsp"%>--%>
 <body>
-<div id="dialog-login" title="登陆" class="easyui-dialog" style="width:330px;height:200px;padding:5px;"
+<div id="dialog-login" title="登陆" class="easyui-dialog" style="width:330px;height:220px;padding:5px;"
      data-options="closed:true,resizable:false,buttons:button_dialog,draggable:false,closable:false">
     <div id="error" class="error" style="height:15px;">${error}</div>
     <form id="form1" action="/login" method="post">
@@ -40,16 +40,19 @@
                 </td>
                 <td><%= form1_username%></td>
                 <td><input class="easyui-textbox" type="text" id="username" name="username"
-                           data-options="prompt:'用户名',iconCls:'icon-user',required:false"/></td>
+                           data-options="prompt:'用户名',iconCls:'icon-user',required:false" value="admin"/></td>
             </tr>
             <tr>
                 <td><%= form1_password%></td>
                 <td><input class="easyui-textbox" type="password" id="password" name="password"
-                           data-options="prompt:'',iconCls:'e-icon icon-lock',required:false"/></td>
+                           data-options="prompt:'',iconCls:'e-icon icon-lock',required:false" value="admin"/></td>
             </tr>
             <tr>
                 <td>自动登录：</td>
                 <td><input type="checkbox" id="rememberMe" name="rememberMe" value="true"></td>
+            </tr>
+            <tr>
+                <td colspan="2"><span>用户名:admin; 密码:admin</span></td>
             </tr>
         </table>
     </form>

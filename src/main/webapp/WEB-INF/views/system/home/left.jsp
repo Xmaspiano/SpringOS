@@ -7,14 +7,21 @@
     });
 
     function _left_getMenuDate(){
+        var tempMenuVo = $('#menu-accordion').accordion('panels');
+        var length_menu = tempMenuVo.length;
         $.ajax({
             url: "/menu/tag/menu_tree.json",
             type:"POST",
             success: function(data){
+                //清理空目录表单
+                for(var i =0; i<length_menu; i++){
+                    $('#menu-accordion').accordion('remove', tempMenuVo[0].panel("options").title);
+                }
+
                 $.each(data.rows, function(i, item) {
                     $('#menu-accordion').accordion('add', {
                         title: item.text,
-                        content: "<ul id=\""+item.id+"\">",
+                        content: "<ul id=\""+item.id+"_menu\">",
                         selected: false
                     });
                     if(item.children != null) {
@@ -27,7 +34,7 @@
 
     function _left_setTreeDate(id, valTree) {
         var datajson = JSON.parse(valTree);
-        $("#"+id).tree({
+        $("#"+id+"_menu").tree({
             animate:true,
             data:datajson,
             onClick: function(node){
@@ -47,6 +54,7 @@
     }
 
     function _left_TreeReload(){
-//        _left_getMenuDate();
+        _left_getMenuDate();
+//        $('#menu-accordion').accordion('reload');
     }
 </script>

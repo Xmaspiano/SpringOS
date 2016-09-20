@@ -53,7 +53,7 @@
 
     <div class="easyui-meun right-float" style="padding:5px;">
         Hello, <span style="color: #00bbee"><shiro:principal/>&nbsp;</span>
-        <a href="#" class="easyui-menubutton" data-options="menu:'#mm5'"><i:info name='系统'/></a>
+        <%--<a href="#" class="easyui-menubutton" data-options="menu:'#mm5'"><i:info name='系统'/></a>--%>
         <a href="#" class="easyui-menubutton" data-options="menu:'#mm4'"><i:info name='设置'/></a>
         <img class="easyui-linkbutton" src="/static/system/image/fly_icon.png" style="height: 40px">
     </div>
@@ -63,26 +63,7 @@
     </div>
 
     <div id="mm2" style="width:100px;">
-        <div onclick="addTab('组织机构管理','/system/dept/dept')">组织机构管理</div>
-        <div onclick="addTab('资源管理','/resources')">资源管理</div>
-        <div class="menu-sep"></div>
-        <div onclick="addTab('菜单管理','/menu')">菜单管理</div>
-        <div onclick="addTab('用户管理','/user')">用户管理</div>
-        <div onclick="addTab('角色管理','/role')">角色管理</div>
-        <div class="menu-sep"></div>
-        <div>
-            <span>Toolbar</span>
-            <div>
-                <div>Address</div>
-                <div>Link</div>
-                <div>Navigation Toolbar</div>
-                <div>Bookmark Toolbar</div>
-                <div class="menu-sep"></div>
-                <div>New Toolbar...</div>
-            </div>
-        </div>
-        <div >Delete</div>
-        <div>Select All</div>
+
     </div>
 
     <div id="mm3" class="menu-content" style="background:#f0f0f0;padding:10px;text-align:left">
@@ -94,9 +75,9 @@
         <div onclick="window.location.href = '/logout' "><i:info name='退出'/></div>
     </div>
 
-    <div id="mm5" style="width:100px;">
-        <div onclick="addTab('组织机构管理','/system/dept/dept')"><i:info name='收藏'/></div>
-    </div>
+    <%--<div id="mm5" style="width:100px;">--%>
+        <%--<div onclick="addTab('组织机构管理','/system/dept/dept')"><i:info name='收藏'/></div>--%>
+    <%--</div>--%>
 </div>
 <div class="hid-overflow" data-options="region:'west',split:true,collapsed:true,title:'<i:info name='菜单目录'/>'" style="width:200px;">
     <%@ include file="left.jsp"%>
@@ -125,6 +106,7 @@
         });
 
         var menu_list = getCookie("MENU_LIST");
+
         if(menu_list != null && menu_list != ""){
             var jsonObj = JSON.parse(menu_list);
 
@@ -147,20 +129,14 @@
 //                iconCls: 'e-icon icon-star-empty icon-large',
                 handler:function(){
                     var tab = $('#body').tabs('getSelected');
-                    if (tab){
-                        var title = tab.panel('options').title;
-                        var tab_title = $("li.tabs-selected").find($(".tabs-title")).text();
-                        var flag = tab_title == title;
-                        change_favarite_icon(flag, title);
-                        change_favarite(title, flag);
-                    }
+                    clear_favarite(tab);
                 }
             },{
                 text:'<i class="icon-cogs"/>',
                 width:26,
 //                iconCls: 'e-icon icon-cogs icon-large',
                 handler:function(){
-                    alert("设置");
+                    alert("洪荒之力用完啦...");
                 }
             }],
             onBeforeClose: function(title){
@@ -174,7 +150,9 @@
                 }
             },
             onSelect: function(title, index){
-
+                menu_list = JSON.parse(getCookie("MENU_LIST"));
+                var jsonObj = getJsonMenu(menu_list, title);
+                ajax_getTreeTagById(jsonObj.id);
             }
         });
 
@@ -188,6 +166,16 @@
     //页面渲染完成
     $.parser.onComplete = function(){
         loading_close(1000);
+    }
+
+    function clear_favarite(tab){
+        if (tab){
+            var title = tab.panel('options').title;
+            var tab_title = $("li.tabs-selected").find($(".tabs-title")).text();
+            var flag = tab_title == title;//判断表头信息和注册表单是否相等
+            change_favarite_icon(flag, title);
+            change_favarite(title, flag);
+        }
     }
 
     function refush_favarite(){

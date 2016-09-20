@@ -23,9 +23,9 @@
 
 </script>
 <body>
-<table id="table-resources" title="<i:info name='资源编辑'/>" style="width:100%;height:400px"></table>
+<table id="table-resources" title="<i class='icon-save'/>&nbsp;<i:info name='资源编辑'/>" style="width:100%;height:400px"></table>
 <div id="dialog-resources" title="" class="easyui-dialog" style="width:500px;height:400px;"
-     data-options="left:360,top:70,closed:true,iconCls:'icon-save',resizable:false,modal:true,buttons:button_dialog">
+     data-options="left:360,top:70,closed:true,resizable:false,modal:true,buttons:button_dialog">
     <form id="form1" method="post">
         <input type="hidden" id="id" name="id" value=""/>
         <input type="hidden" id="available" name="available" value="0"/>
@@ -47,7 +47,7 @@
                 <td><i:info name='是否锁定'/></td>
                 <td>
                     <a id="btn" href="#" class="easyui-linkbutton"
-                       data-options="iconCls:'e-icon icon-ok',toggle:true,selected:false" onclick="clickLife()">
+                       data-options="toggle:true,selected:false" onclick="clickLife()">
                         <i:info name='未锁定'/>
                     </a>
                 </td>
@@ -66,7 +66,7 @@
     $(function() {
         //初始化treegrid数据
         $('#table-resources').datagrid({
-            title:'<i:info name='资源编辑'/>',
+            title:"<i class='icon-save'/>&nbsp;<i:info name='资源编辑'/>",
             url: '/resources/date_grid.json',
             loadMsg:"<i:info name='数据加载中...'/>",
             fitColumns:true,
@@ -96,23 +96,23 @@
 
     //定义treegrid工具栏
     var toolbar = [{
-        text:"<i:info name='新增'/>",
+        text:"<i class='icon-plus'/>&nbsp;<i:info name='新增'/>",
         <shiro:lacksPermission name="resources:save:add">disabled:true,</shiro:lacksPermission>
-        iconCls: 'e-icon icon-plus',
+//        iconCls: 'e-icon icon-plus',
         handler: function(){
             actionOver("add");
         }
     },{
-        text:"<i:info name='修改'/>",
+        text:"<i class='icon-pencil'/>&nbsp;<i:info name='修改'/>",
         <shiro:lacksPermission name="resources:save:edit">disabled:true,</shiro:lacksPermission>
-        iconCls: 'e-icon icon-pencil',
+//        iconCls: 'e-icon icon-pencil',
         handler: function(){
             actionOver("edit");
         }
     },{
-        text:"<i:info name='删除'/>",
+        text:"<i class='icon-remove'/>&nbsp;<i:info name='删除'/>",
         <shiro:lacksPermission name="resources:delete">disabled:true,</shiro:lacksPermission>
-        iconCls: 'e-icon icon-remove',
+//        iconCls: 'e-icon icon-remove',
         handler: function(){
             actionOver("delete");
         }
@@ -120,15 +120,15 @@
 
     //定义dialog对话框按钮
     var button_dialog = [{
-        text:'<i:info name='确认'/>',
-        iconCls: 'e-icon icon-ok',
+        text:"<i class='icon-ok'/>&nbsp;<i:info name='确认'/>",
+//        iconCls: 'e-icon icon-ok',
         handler: function(){
             submitApply();
             parent._left_TreeReload();
         }
     },{
-        text:'取消',
-        iconCls: 'e-icon icon-remove',
+        text:"<i class='icon-remove'/>&nbsp;<i:info name='取消'/>",
+//        iconCls: 'e-icon icon-remove',
         handler:function(){
             actionOver("colse");
         }
@@ -246,15 +246,15 @@
         if(val){
             $("#btn").linkbutton({
                 selected:true,
-                text:"<i:info name='已锁定'/>",
-                iconCls:'e-icon icon-ban-circle'
+                text:"<i class='icon-ban-circle'/>&nbsp;<i:info name='已锁定'/>"
+//                iconCls:'e-icon icon-ban-circle'
             });
             $("#available").val(1);
         }else{
             $("#btn").linkbutton({
                 selected:false,
-                text:"<i:info name='未锁定'/>",
-                iconCls:'e-icon icon-ok'
+                text:"<i class='icon-ok'/>&nbsp;<i:info name='未锁定'/>"
+//                iconCls:'e-icon icon-ok'
             });
             $("#available").val(0);
         }
