@@ -3,13 +3,4 @@
 *.iws
 .idea/
 target/
-src/main/resources/application.properties
 
-src/main/resources/application.properties
-<<<<<<< HEAD
-
-src/main/resources/application.properties
-=======
->>>>>>> 发布组
-
-src/main/resources/application.properties
