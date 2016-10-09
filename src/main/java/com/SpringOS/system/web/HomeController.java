@@ -40,7 +40,7 @@ public class HomeController {
         String userTabJson = cache.get(subject.getPrincipal().toString(), String.class);
 
 //        session.setAttribute("menu", userTabJson);
-        System.out.println(userTabJson);
+        LOGGER.info(userTabJson);
 
         model.addAttribute("userTabJson", userTabJson);
         return "system/home/home";
@@ -86,7 +86,7 @@ public class HomeController {
 
             Subject subject = SecurityUtils.getSubject();
 
-            System.out.println(jsonTab);
+            LOGGER.info(jsonTab);
             if(!jsonTab.equals("")){
                 cache.put(subject.getPrincipal().toString(), jsonTab);
                 jsonMap.put("success", true);

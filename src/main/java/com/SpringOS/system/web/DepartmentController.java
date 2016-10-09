@@ -1,39 +1,41 @@
 package com.SpringOS.system.web;
 
-import com.SpringOS.system.entity.OsMenu;
-import com.SpringOS.system.service.OsMenuService;
+import com.SpringOS.system.entity.Department;
+import com.SpringOS.system.service.DepartmentService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @Controller
-@RequestMapping(value = {"/menu"})
-public class MenuController {
-    private static final Logger LOGGER = LoggerFactory.getLogger(MenuController.class);
+@RequestMapping(value = {"/dept"})
+public class DepartmentController {
+    private static final Logger LOGGER = LoggerFactory.getLogger(DepartmentController.class);
 
     @Autowired
-    private OsMenuService osMenuService;
+    private DepartmentService departmentService;
 
     @RequestMapping(method = RequestMethod.GET)
     public String index(){
-        return "system/menu/menu";
+        return "system/dept/dept";
     }
 
     @RequestMapping(value = "/save" )
     @ResponseBody
-    @RequiresPermissions("menu:save:add,edit")
-    public Map saveInfo(OsMenu osMenu){
+    @RequiresPermissions("dept:save:add,edit")
+    public Map saveInfo(Department department){
         Map jsonMap = new HashMap();
         try {
-            osMenuService.save(osMenu);
+            departmentService.save(department);
             jsonMap.put("success", true);
             jsonMap.put("message", "保存成功...");
         }catch(Exception e){
@@ -46,14 +48,14 @@ public class MenuController {
 
     @RequestMapping(value = "/delete" )
     @ResponseBody
-    @RequiresPermissions("menu:delete")
+    @RequiresPermissions("dept:delete")
     public Map deleteInfo(@RequestParam("id") long id){
         Map jsonMap = new HashMap();
         try {
-            if(osMenuService.findAllBySuper(id).size() > 0){
+            if(departmentService.findAllBySuper(id).size() > 0){
                 throw new Exception("包含子菜单");
             }
-            osMenuService.delete(id);
+            departmentService.delete(id);
             jsonMap.put("success", true);
             jsonMap.put("message", "删除成功...");
         }catch(Exception e){
@@ -68,16 +70,16 @@ public class MenuController {
     @ResponseBody
     public Map getTreeGridData(){
         Map jsonMap = new HashMap();
-        List<OsMenu> osmList = osMenuService.findAll();
+        List<Department> osmList = departmentService.findAll();
 
         Map[] treeMap = new HashMap[osmList.size()];
-        OsMenu sonVO;
+        Department sonVO;
         jsonMap.put("total",treeMap.length);
         for (int i = 0; i < treeMap.length; i++) {
             treeMap[i] = new HashMap();
             sonVO = osmList.get(i);
             treeMap[i].put("id",sonVO.getId());
-            treeMap[i].put("appid",sonVO.getAppid());
+            treeMap[i].put("code",sonVO.getCode());
             treeMap[i].put("name",sonVO.getName());
             treeMap[i].put("parentid",sonVO.getParentid());
             treeMap[i].put("remark",sonVO.getRemark());
@@ -90,12 +92,5 @@ public class MenuController {
         jsonMap.put("rows",treeMap);
         return jsonMap;
     }
-
-//    @ModelAttribute
-//    public void ssss(@RequestParam(value = "Id",defaultValue = "-1")Long id, Model model){
-//
-////        model.addAttribute("",);
-//
-//    }
 
 }

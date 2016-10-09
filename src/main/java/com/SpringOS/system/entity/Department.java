@@ -11,23 +11,24 @@ import java.util.List;
  * Created by AlbertXmas on 16/8/8.
  */
 @Entity
-public class OsMenu extends IdEntity {
-    private String appid;
+@Table(name = "os_deptartment")
+public class Department extends IdEntity {
+    private String code;
     private String name;
     private Long parentid;
     private String remark;
     private Date datemark;
     private boolean life;
 
-    private List<OsMenu> osMenuList = new ArrayList<OsMenu>();
+    private List<Department> departmentList = new ArrayList<Department>();
     @OneToMany(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
     @JoinColumn(name = "parentid", updatable = false)
-    public List<OsMenu> getOsMenuList() {
-        return osMenuList;
+    public List<Department> getDepartmentList() {
+        return departmentList;
     }
 
-    public void setOsMenuList(List<OsMenu> osMenuList) {
-        this.osMenuList = osMenuList;
+    public void setDepartmentList(List<Department> departmentList) {
+        this.departmentList = departmentList;
     }
 
     public Date getDatemark() {
@@ -38,12 +39,12 @@ public class OsMenu extends IdEntity {
         this.datemark = datemark;
     }
 
-    public String getAppid() {
-        return appid;
+    public String getCode() {
+        return code;
     }
 
-    public void setAppid(String appid) {
-        this.appid = appid;
+    public void setCode(String code) {
+        this.code = code;
     }
 
     public String getName() {
