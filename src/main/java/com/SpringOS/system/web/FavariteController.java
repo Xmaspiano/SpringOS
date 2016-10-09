@@ -84,7 +84,7 @@ public class FavariteController {
 
     @RequestMapping(value = "/menu_favarite_url.json" )
     @ResponseBody
-    public Map getFavariteDateUrl(){
+    public Map getFavariteDataUrl(){
         Map jsonMap = new HashMap();
         jsonMap.put("success", true);
 

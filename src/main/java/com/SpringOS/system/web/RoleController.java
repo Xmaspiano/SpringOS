@@ -48,7 +48,7 @@ public class RoleController extends BasicController {
 
     @RequestMapping(value = "/date_grid.json" )
     @ResponseBody
-    public Map getGridDate(){
+    public Map getGridData(){
         Map jsonMap = new HashMap();
         List<Role> osmList = roleService.findAll();
 

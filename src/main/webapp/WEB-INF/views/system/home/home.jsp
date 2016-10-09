@@ -91,6 +91,7 @@
 
     </div>
 </div>
+<div id="SuperWin"></div>
 <%--<div data-options="region:'south',border:false" style="height: 23px;">--%>
 <%--<div id="div_json" class="footer" style="text-align-all: center">Copyright © RDIFramework.NET V2.9, All Rights Reserved</div>--%>
 <%--</div>--%>
