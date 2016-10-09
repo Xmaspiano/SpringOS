@@ -117,7 +117,9 @@
 
 详细讲解:
 
-在java web 应用中使用dbcp做为连接池，当数据库重启或数据库连接超过设置的最大timeout时间，数据库会强行断开已有的链接，此时当web程序访问数据库时就会出现错误，大致的错误信息`java.io.EOFException: Can not read response from server. Expected to read 4 bytes, read 0 bytes before connection was unexpectedly lost`，原因是数据库这边已有的连接强行断开，而连接池中不知道已经断开，还是从连接池取出数据库连接交给程序去执行数据库操作，所以导致出错。
+在java web 应用中使用dbcp做为连接池，当数据库重启或数据库连接超过设置的最大timeout时间，数据库会强行断开已有的链接，此时当web程序访问数据库时就会出现错误，错误信息:
+
+`java.io.EOFException: Can not read response from server. Expected to read 4 bytes, read 0 bytes before connection was unexpectedly lost`，原因是数据库这边已有的连接强行断开，而连接池中不知道已经断开，还是从连接池取出数据库连接交给程序去执行数据库操作，所以导致出错。
 
 mysql的默认最大timeout时间是8小时，对空闲超过8小时的数据库连接会强行断开。timeout有两种，一个是非交互式的最大等待时间`wait_timeout`，另一个是交互式的最大等待时间`interactive_time`，交互连接如mysql gui tool中的连接。一般情况下interactive_timeout的设置将要对你的web 应用没有多大的影响。wait_timeout的时间设置太小话会导致连接关闭很快，从而使一些持久连接不起作用，反之设置过大，容易造成连接打开时间过长，在show processlist时，能看到太多的sleep状态的连接，从而造成too many connections错误。修改wait_timeout可以在my.cnf的mysqld段中设置。
 
