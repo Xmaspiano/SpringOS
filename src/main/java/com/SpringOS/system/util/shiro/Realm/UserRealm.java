@@ -41,6 +41,7 @@ public class UserRealm extends AuthorizingRealm {
         roles.add("menu");
         roles.add("role");
         roles.add("resources");
+        roles.add("dept");
 //        roles.add("role:save:add");
         authorizationInfo.setStringPermissions(roles);
         return authorizationInfo;

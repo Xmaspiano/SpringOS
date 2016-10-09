@@ -20,8 +20,8 @@
 
 </script>
 <body>
-<table id="table-menu" title="<i class='icon-save'/><i:info name='菜单管理'/>&nbsp;" style="width:100%;height:400px"></table>
-<div id="dialog-menu" title="" class="easyui-dialog" style="width:500px;height:400px;"
+<table id="table-dept" title="<i class='icon-save'/><i:info name='机构管理'/>&nbsp;" style="width:100%;height:400px"></table>
+<div id="dialog-dept" title="" class="easyui-dialog" style="width:500px;height:400px;"
      data-options="left:360,top:70,closed:true,resizable:false,modal:true,buttons:button_dialog">
     <form id="form1" method="post">
         <input type="hidden" id="id" name="id" value=""/>
@@ -30,9 +30,9 @@
         <input type="hidden" id="name_old" name="parentid" value=""/>
         <table style="width: 100%;height:70px;">
             <tr>
-                <td><i:info name='菜单编号'/></td>
-                <td><input class="easyui-textbox" type="text" id="appid" name="appid" data-options="required:true"/></td>
-                <td><i:info name='菜单名称'/></td>
+                <td><i:info name='机构编号'/></td>
+                <td><input class="easyui-textbox" type="text" id="code" name="code" data-options="required:true"/></td>
+                <td><i:info name='机构名称'/></td>
                 <td><input class="easyui-textbox" type="text" id="name" name="name" data-options="required:true"/></td>
             </tr>
             <tr>
@@ -49,7 +49,7 @@
         <div style="margin:10px 0 10px 0;"/>
     </form>
     <div class="easyui-panel" title="<i:info name='上级目录'/>" style="height:236px;"  data-options="border:false">
-        <ul id="menu_tree"></ul>
+        <ul id="dept_tree"></ul>
     </div>
 </div>
 </body>
@@ -57,9 +57,9 @@
 <script>
     $(function() {
         //初始化treegrid数据
-        $('#table-menu').treegrid({
-            title:"<i class='icon-save'/>&nbsp;<i:info name='菜单管理'/>",
-            url: '/menu/date_treegrid.json',
+        $('#table-dept').treegrid({
+            title:"<i class='icon-save'/>&nbsp;<i:info name='机构管理'/>",
+            url: '/dept/date_treegrid.json',
             loadMsg:"<i:info name='数据加载中...'/>",
             idField: 'id',
             treeField: 'name',
@@ -70,7 +70,7 @@
             columns: [[
                 {field: 'id', title: "<i:info name='主键'/>", width: 180, hidden:true},
                 {field: 'name', title: "<i:info name='菜单名称'/>", width: 180},
-                {field: 'appid', title: "<i:info name='菜单编号'/>", width: 60, align: 'right'},
+                {field: 'code', title: "<i:info name='菜单编号'/>", width: 60, align: 'right'},
                 {field: 'parentid', title: "<i:info name='父菜单ID'/>", width: 80},
                 {field: 'remark', title: "<i:info name='备注'/>", width: 80},
                 {field: 'life', title: "<i:info name='是否启用'/>", width: 60, align: 'right'},
@@ -82,8 +82,8 @@
         });
 
         //初始化上级目录tree数据
-        $('#menu_tree').tree({
-            url:"/menu/tag/menu_tree.json?parentid=-1",
+        $('#dept_tree').tree({
+            url:"/dept/tag/dept_tree.json?parentid=-1",
             type:"POST",
             lines:true,
             loadFilter: function(data){
@@ -94,9 +94,9 @@
                 }
             },
             onClick:function(data){//tree菜单点击事件
-                var row = $('#table-menu').treegrid('find',data.id);
+                var row = $('#table-dept').treegrid('find',data.id);
                 if(row) {
-                    $("#appid").textbox("setValue", row.appid);
+                    $("#code").textbox("setValue", row.code);
                 }
 
                 $('#parentid').val(data.id);
@@ -107,21 +107,21 @@
     //定义treegrid工具栏
     var toolbar = [{
         text:"<i class='icon-plus'/>&nbsp;<i:info name='新增'/>",
-        <shiro:lacksPermission name="menu:save:add">disabled:true,</shiro:lacksPermission>
+        <shiro:lacksPermission name="dept:save:add">disabled:true,</shiro:lacksPermission>
 //        iconCls: 'e-icon icon-plus',
         handler: function(){
             actionOver("add");
         }
     },{
         text:"<i class='icon-pencil'/>&nbsp;<i:info name='修改'/>",
-        <shiro:lacksPermission name="menu:save:add">disabled:true,</shiro:lacksPermission>
+        <shiro:lacksPermission name="dept:save:add">disabled:true,</shiro:lacksPermission>
 //        iconCls: 'e-icon icon-pencil',
         handler: function(){
             actionOver("edit");
         }
     },{
         text:"<i class='icon-remove'/>&nbsp;<i:info name='删除'/>",
-        <shiro:lacksPermission name="menu:save:add">disabled:true,</shiro:lacksPermission>
+        <shiro:lacksPermission name="dept:save:add">disabled:true,</shiro:lacksPermission>
 //        iconCls: 'e-icon icon-remove',
         handler: function(){
             actionOver("delete");
@@ -147,34 +147,34 @@
     function actionOver(code){
         switch(code){
             case "colse":
-                $('#dialog-menu').dialog('close');
+                $('#dialog-dept').dialog('close');
                 break;
             case "reload":
-                $('#table-menu').treegrid("reload");
-                $('#menu_tree').tree("reload");
+                $('#table-dept').treegrid("reload");
+                $('#dept_tree').tree("reload");
                 break;
-            case "menuReload":
-                refush_menu();
+            case "deptReload":
+                refush_dept();
                 break;
             case "add":
-                <shiro:hasPermission name="menu:save:add">
-                addChangeMenuTree();
-                $('#dialog-menu').dialog({title: "<i:info name='新增菜单'/>"});
-                $('#dialog-menu').dialog('open');
+                <shiro:hasPermission name="dept:save:add">
+                addChangedeptTree();
+                $('#dialog-dept').dialog({title: "<i:info name='新增菜单'/>"});
+                $('#dialog-dept').dialog('open');
                 break;
                 </shiro:hasPermission>
             case "edit":
-                <shiro:hasPermission name="menu:save:edit">
-                if(editChangeMenuTree()) {
-                    $('#dialog-menu').dialog({title: "<i:info name='资源编辑'/>"});
-                    $('#dialog-menu').dialog('open');
+                <shiro:hasPermission name="dept:save:edit">
+                if(editChangedeptTree()) {
+                    $('#dialog-dept').dialog({title: "<i:info name='资源编辑'/>"});
+                    $('#dialog-dept').dialog('open');
                 }else{
                     $.messager.alert('Warning',"<i:info name='请选择...'/>");
                 }
                 break;
                 </shiro:hasPermission>
             case "delete":
-                <shiro:hasPermission name="menu:save:delete">
+                <shiro:hasPermission name="dept:save:delete">
                 deleteRow();
                 break;
                 </shiro:hasPermission>
@@ -187,7 +187,7 @@
     //form1确认提交
     function submitApply(){
         $('#form1').form('submit', {
-            url:"menu/save",
+            url:"dept/save",
             onSubmit: function(){
 
             },
@@ -204,8 +204,8 @@
                     parent.refush_favarite();
 
                     if (parent.$('#body').tabs('exists', name)){
-                        menu_list = JSON.parse(parent.getCookie("MENU_LIST"));
-                        var jsonObj = parent.getJsonMenu(menu_list, name);
+                        dept_list = JSON.parse(parent.getCookie("dept_LIST"));
+                        var jsonObj = parent.getJsondept(dept_list, name);
                         parent.ajax_getTreeTagById(jsonObj.id);
                         parent.$('#body').tabs('close', name);
                     }
@@ -216,8 +216,8 @@
         });
     }
     //添加treegrid数据
-    function addChangeMenuTree(){
-        var row = $('#table-menu').treegrid('getSelected');
+    function addChangedeptTree(){
+        var row = $('#table-dept').treegrid('getSelected');
         if(row != null) {//有选择资料,将部分资料值初始化到表单
             row.parentid = row.id;
             row.id = "";
@@ -225,21 +225,21 @@
             row.remark = "";
             row.name = "";
 
-            menuTreeSelect(row.parentid);
+            deptTreeSelect(row.parentid);
             setFormRow(row);
         }else{//未选择资料,默认初始化值
-            menuTreeSelect();
+            deptTreeSelect();
             setFormRow();
         }
     }
     //修改treegrid数据
-    function editChangeMenuTree(){
-        var row = $('#table-menu').treegrid('getSelected');
+    function editChangedeptTree(){
+        var row = $('#table-dept').treegrid('getSelected');
         if(row != null) {//有选择资料,将资料值初始化到表单
-            menuTreeSelect(row.parentid);
+            deptTreeSelect(row.parentid);
             setFormRow(row);
-            $('#dialog-menu').dialog({title: "<i:info name='请选择...'/>"});
-            $('#dialog-menu').dialog('open');
+            $('#dialog-dept').dialog({title: "<i:info name='请选择...'/>"});
+            $('#dialog-dept').dialog('open');
             return true;
         }else{//未选择资料,默认初始化值
             return false;
@@ -247,10 +247,10 @@
     }
     //删除treegrid数据
     function deleteRow() {
-        var row = $('#table-menu').treegrid('getSelected');
+        var row = $('#table-dept').treegrid('getSelected');
         if (row != null) {
             $.ajax({
-                url: "menu/delete?id=" + row.id,
+                url: "dept/delete?id=" + row.id,
                 type: "POST",
                 success: function (data) {
                     if (data.success) {
@@ -273,11 +273,11 @@
         }
     }
     //选择对话框目录tree并赋值
-    function menuTreeSelect(id){
-        var tag = id && $('#menu_tree').tree('find', id) != null?$('#menu_tree').tree('find', id):$('#menu_tree').tree('getRoot');//无id默认到根目录
+    function deptTreeSelect(id){
+        var tag = id && $('#dept_tree').tree('find', id) != null?$('#dept_tree').tree('find', id):$('#dept_tree').tree('getRoot');//无id默认到根目录
         if(tag) {
-            $('#menu_tree').tree('select', tag.target);
-            $('#menu_tree').tree('expandTo', tag.id);
+            $('#dept_tree').tree('select', tag.target);
+            $('#dept_tree').tree('expandTo', tag.id);
 
             $('#parentid').val(tag.id);
         }
@@ -312,14 +312,14 @@
     function setFormRow(data){
         if(data == null){
             $("#id").val("");
-            $("#appid").textbox("setValue","");
+            $("#code").textbox("setValue","");
             $("#name").textbox("setValue","");
             $("#name_old").val("");
             $("#remark").textbox("setValue","");
             changeLife(1);
         }else{
             $("#id").val(data.id);
-            $("#appid").textbox("setValue",data.appid);
+            $("#code").textbox("setValue",data.code);
             $("#name").textbox("setValue",data.name);
             $("#name_old").val(data.name);
             $("#remark").textbox("setValue",data.remark);
